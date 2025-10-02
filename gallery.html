@@ -24,6 +24,10 @@
       <nav class="hidden md:flex space-x-6">
         <a href="index.html" class="hover:text-yellow-300">Home</a>
         <a href="gallery.html" class="hover:text-yellow-300">Gallery</a>
+        <a href="benefits.html" class="hover:text-yellow-300 font-bold underline">Benefits</a>
+        <a href="index.html#application" class="hover:text-yellow-300">Apply</a>
+        <a href="index.html#contact" class="hover:text-yellow-300">Contact</a>
+      </nav>>
       </nav>
       <!-- Mobile Toggle -->
       <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
@@ -32,9 +36,12 @@
     </div>
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden bg-blue-500 md:hidden px-4 py-2 space-y-2">
-      <a href="index.html" class="block text-white hover:text-yellow-300">Home</a>
-      <a href="gallery.html" class="block text-white hover:text-yellow-300">Gallery</a>
-    </div>
+        <a href="index.html" class="hover:text-yellow-300">Home</a>
+        <a href="gallery.html" class="hover:text-yellow-300">Gallery</a>
+        <a href="benefits.html" class="hover:text-yellow-300 font-bold underline">Benefits</a>
+        <a href="index.html#application" class="hover:text-yellow-300">Apply</a>
+        <a href="index.html#contact" class="hover:text-yellow-300">Contact</a>
+   
   </header>
 
   <!-- Gallery -->
@@ -99,6 +106,14 @@
       'wrapAround': true,
       'fadeDuration': 300,
       'imageFadeDuration': 300
+    });
+      
+    // Mobile menu toggle
+    const menuBtn = document.getElementById("menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    menuBtn.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      gsap.fromTo(mobileMenu, {y: -20, opacity: 0}, {y: 0, opacity: 1, duration: 0.4});
     });
   </script>
 </body>
