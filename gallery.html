@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery - Remmoho Early Learning</title>
 
-  <!-- Tailwind -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Lightbox2 CSS -->
@@ -23,56 +23,36 @@
       <!-- Desktop Menu -->
       <nav class="hidden md:flex space-x-6">
         <a href="index.html" class="hover:text-yellow-300">Home</a>
-        <a href="gallery.html" class="hover:text-yellow-300">Gallery</a>
-        <a href="benefits.html" class="hover:text-yellow-300 font-bold underline">Benefits</a>
+        <a href="gallery.html" class="hover:text-yellow-300 font-bold underline">Gallery</a>
+        <a href="benefits.html" class="hover:text-yellow-300">Benefits</a>
         <a href="index.html#application" class="hover:text-yellow-300">Apply</a>
         <a href="index.html#contact" class="hover:text-yellow-300">Contact</a>
-      </nav>>
       </nav>
+
       <!-- Mobile Toggle -->
       <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
         ☰
       </button>
     </div>
+
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden bg-blue-500 md:hidden px-4 py-2 space-y-2">
-        <a href="index.html" class="hover:text-yellow-300">Home</a>
-        <a href="gallery.html" class="hover:text-yellow-300">Gallery</a>
-        <a href="benefits.html" class="hover:text-yellow-300 font-bold underline">Benefits</a>
-        <a href="index.html#application" class="hover:text-yellow-300">Apply</a>
-        <a href="index.html#contact" class="hover:text-yellow-300">Contact</a>
-   
+      <a href="index.html" class="block hover:text-yellow-300">Home</a>
+      <a href="gallery.html" class="block hover:text-yellow-300 font-bold underline">Gallery</a>
+      <a href="benefits.html" class="block hover:text-yellow-300">Benefits</a>
+      <a href="index.html#application" class="block hover:text-yellow-300">Apply</a>
+      <a href="index.html#contact" class="block hover:text-yellow-300">Contact</a>
+    </div>
   </header>
 
   <!-- Gallery -->
   <section class="container mx-auto py-16 px-6">
     <h2 class="text-3xl font-bold text-center text-blue-700 mb-10">Our Happy Moments 📸</h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-      <a href="gallery/hero1.jpg" data-lightbox="gallery" data-title="Happy Moment 1">
-        <img src="gallery/hero1.jpg" alt="Happy Moment 1"
-             class="rounded-xl shadow-lg hover:scale-105 transform transition">
-      </a>
-
-      <a href="gallery/hero2.jpg" data-lightbox="gallery" data-title="Happy Moment 2">
-        <img src="gallery/hero2.jpg" alt="Happy Moment 2"
-             class="rounded-xl shadow-lg hover:scale-105 transform transition">
-      </a>
-
-      <a href="gallery/hero3.jpg" data-lightbox="gallery" data-title="Happy Moment 3">
-        <img src="gallery/hero3.jpg" alt="Happy Moment 3"
-             class="rounded-xl shadow-lg hover:scale-105 transform transition">
-      </a>
-
-      <a href="gallery/hero4.jpg" data-lightbox="gallery" data-title="Happy Moment 4">
-        <img src="gallery/hero4.jpg" alt="Happy Moment 4"
-             class="rounded-xl shadow-lg hover:scale-105 transform transition">  
-      </a>
-
-    </div>
+    <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
   </section>
-<!-- Map --->
-<section id="contact" class="py-16">
+
+  <!-- Map -->
+  <section id="contact" class="py-16">
     <h3 class="text-3xl text-center font-bold text-blue-700 mb-6">Find Us Here</h3>
     <div class="container mx-auto max-w-4xl">
       <iframe class="w-full h-96 rounded-xl shadow-lg"
@@ -90,31 +70,57 @@
         <a href="https://www.facebook.com/share/19kn9f9X45/" target="_blank">Facebook</a>
         <a href="https://www.tiktok.com/@remmoho.early.lea?_t=ZS-8zyAh9iVbjc&_r=1" target="_blank">TikTok</a>
       </div>
+    </div>
   </footer>
 
   <!-- Lightbox2 JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
 
   <script>
-    // Mobile toggle
+    // Toggle mobile menu
     document.getElementById("menu-toggle").addEventListener("click", function () {
       document.getElementById("mobile-menu").classList.toggle("hidden");
     });
 
+    // Load all images dynamically from /gallery folder
+    async function loadGallery() {
+      try {
+        // Fetch folder contents (requires hosting server that allows directory listing)
+        const response = await fetch('gallery/');
+        const text = await response.text();
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(text, 'text/html');
+        const links = Array.from(htmlDoc.querySelectorAll('a'))
+          .map(a => a.getAttribute('href'))
+          .filter(href => href && href.match(/\.(jpg|jpeg|png|gif|webp)$/i));
+
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        links.forEach((file, index) => {
+          const a = document.createElement('a');
+          a.href = `gallery/${file}`;
+          a.setAttribute('data-lightbox', 'gallery');
+          a.setAttribute('data-title', `Happy Moment ${index + 1}`);
+          a.innerHTML = `
+            <img src="gallery/${file}" alt="Moment ${index + 1}"
+                 class="rounded-xl shadow-lg hover:scale-105 transform transition duration-300 ease-in-out">`;
+          galleryGrid.appendChild(a);
+        });
+      } catch (error) {
+        console.error('Error loading gallery images:', error);
+      }
+    }
+
+    loadGallery();
+
+    // Lightbox config
     lightbox.option({
-      'resizeDuration': 200,
-      'wrapAround': true,
-      'fadeDuration': 300,
-      'imageFadeDuration': 300
-    });
-      
-    // Mobile menu toggle
-    const menuBtn = document.getElementById("menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    menuBtn.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-      gsap.fromTo(mobileMenu, {y: -20, opacity: 0}, {y: 0, opacity: 1, duration: 0.4});
+      resizeDuration: 200,
+      wrapAround: true,
+      fadeDuration: 300,
+      imageFadeDuration: 300
     });
   </script>
+
 </body>
 </html>
