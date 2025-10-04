@@ -77,43 +77,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
 
   <script>
-    // Toggle mobile menu
+    // Mobile menu toggle
     document.getElementById("menu-toggle").addEventListener("click", function () {
       document.getElementById("mobile-menu").classList.toggle("hidden");
     });
 
-    // Load all images dynamically from /gallery folder
+    // Load gallery images from gallery.json
     async function loadGallery() {
       try {
-        // Fetch folder contents (requires hosting server that allows directory listing)
-        const response = await fetch('gallery/');
-        const text = await response.text();
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(text, 'text/html');
-        const links = Array.from(htmlDoc.querySelectorAll('a'))
-          .map(a => a.getAttribute('href'))
-          .filter(href => href && href.match(/\.(jpg|jpeg|png|gif|webp)$/i));
+        const response = await fetch("gallery/gallery.json");
+        const images = await response.json();
+        const galleryGrid = document.getElementById("gallery-grid");
 
-        const galleryGrid = document.getElementById('gallery-grid');
-
-        links.forEach((file, index) => {
-          const a = document.createElement('a');
-          a.href = `gallery/${file}`;
-          a.setAttribute('data-lightbox', 'gallery');
-          a.setAttribute('data-title', `Happy Moment ${index + 1}`);
+        images.forEach((img, index) => {
+          const a = document.createElement("a");
+          a.href = `gallery/${img}`;
+          a.setAttribute("data-lightbox", "gallery");
+          a.setAttribute("data-title", `Happy Moment ${index + 1}`);
           a.innerHTML = `
-            <img src="gallery/${file}" alt="Moment ${index + 1}"
+            <img src="gallery/${img}" alt="Moment ${index + 1}"
                  class="rounded-xl shadow-lg hover:scale-105 transform transition duration-300 ease-in-out">`;
           galleryGrid.appendChild(a);
         });
       } catch (error) {
-        console.error('Error loading gallery images:', error);
+        console.error("Error loading gallery images:", error);
       }
     }
 
     loadGallery();
 
-    // Lightbox config
+    // Lightbox options
     lightbox.option({
       resizeDuration: 200,
       wrapAround: true,
@@ -121,6 +114,5 @@
       imageFadeDuration: 300
     });
   </script>
-
 </body>
 </html>
